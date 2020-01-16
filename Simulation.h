@@ -12,7 +12,7 @@ private:
 	void stream(const VelocitySet& velSet, vector<Node>& nodes);
 
 public:
-	Simulation(const vector<vector<double>>& RHO, const vector<vector<vector<double>>>& U, const vector<vector<vector<double>>>& FIN, const vector<vector<int>>& C);
+	Simulation();
 	~Simulation();
 	
 	void iterate();
