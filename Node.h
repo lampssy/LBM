@@ -2,23 +2,24 @@
 
 #include <vector>
 #include <iostream>
+#include "VelocitySet.h"
 
-class Node
+class Node : public Domain
 {
 private:
+	int m_x;
+	int m_y;
+	double m_velocity;
 	std::vector<double> m_distributions;
 	std::vector<double> m_newDistribution;
-	//std::vector<int> m_neighbours;
-	double* m_neighbour;
-	// int m_position[2];
-	int* m_position;
 
 public:
-	Node();
+	Node(int x, int y);
 	~Node();
 
-	double calculateDistribution();
-	double calculateDensity();
-	double calculateVelocity();
+	double Equilibrium(const VelocitySet& velSet, size_t dir);
+	double Distribution();
+	double Density();
+	std::vector<double> Velocity(const VelocitySet& velSet, size_t idx);
 };
 

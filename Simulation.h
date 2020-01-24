@@ -8,7 +8,7 @@ using namespace std;
 class Simulation
 {
 private:
-	void collision(const VelocitySet& velSet, vector<Node>& nodes);
+	void collision(Node node, const VelocitySet& velSet, vector<Node>& nodes);
 	void stream(const VelocitySet& velSet, vector<Node>& nodes);
 
 public:

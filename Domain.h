@@ -5,15 +5,17 @@
 
 class Domain
 {
+public:
+	size_t m_nDimensions = m_domainSize.size();
 private:
 	VelocitySet m_velSet;
+	vector<vector<Node>> m_nodes;
 	vector<size_t> m_domainSize;
-	vector<Node> m_nodes;
 public:
-	Domain(const VelocitySet& velSet, vector<size_t> domainSize);
+	Domain(const VelocitySet& velSet, const vector<size_t>& domainSize);
 	~Domain();
 
 	void CreateNodes();
-	Node InitializeNode(std::vector<double> position);
+	Node InitializeNode(std::vector<double> coordinates);
 };
 
