@@ -42,7 +42,7 @@ void Simulation::Streaming(const VelocitySet& velSet, std::vector<std::vector<No
 				if (domain.IsInDomain(x_neighbour, y_neighbour))
 				{
 					Node* neighbour_ptr = &nodes[y_neighbour][x_neighbour];
-					nodes[coord_y][coord_x].Stream(velSet, neighbour_ptr, dir);
+					nodes[coord_y][coord_x].Stream(velSet, neighbour_ptr, dir, domain);
 				}
 			}
 		}
