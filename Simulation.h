@@ -1,15 +1,15 @@
 #pragma once
-#include <vector>
-#include "Node.h"
-#include "VelocitySet.h"
 
-using namespace std;
+#include "InternalNode.h"
+#include "VelocitySet.h"
+#include "Domain.h"
+
 
 class Simulation
 {
 private:
-	void collision(Node node, const VelocitySet& velSet, vector<Node>& nodes);
-	void stream(const VelocitySet& velSet, vector<Node>& nodes);
+	void Collision(const VelocitySet& velSet, std::vector<std::vector<Node>>& nodes, double relaxation);
+	void Streaming(const VelocitySet& velSet, std::vector<std::vector<Node>>& nodes, Domain domain);
 
 public:
 	Simulation();

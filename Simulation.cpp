@@ -1,5 +1,4 @@
 #include "Simulation.h"
-#include "Domain.h"
 
 
 Simulation::Simulation()
@@ -12,29 +11,41 @@ Simulation::~Simulation()
 
 void Simulation::iterate()
 {
-	collision();	
-	stream();	
+	Collision();	
+	Streaming();	
 }
 
-void Simulation::collision(Node node, const VelocitySet& velSet, vector<Node>& nodes)
+void Simulation::Collision(const VelocitySet& velSet, std::vector<std::vector<Node>>& nodes, double relaxation)
 {
-	for (size_t dir = 0; dir < velSet.get_nDirections; dir++)
+	for (auto row : nodes)
 	{
-		for (auto node : nodes)
+		for (auto node : row)
 		{
-			// fout = fi + 1/tau(fi - feq)
+			for (size_t dir = 0; dir < velSet.get_nDirections; dir++)
+			{
+				node.m_newDistributions[dir] = node.m_distributions[dir] - 1 / relaxation * (node.m_distributions[dir] - node.Equilibrium(velSet, dir));	// applying BGK approximation
+			}
 		}
 	}
-
 }
 
-void Simulation::stream(const VelocitySet& velSet, vector<Node>& nodes)
+void Simulation::Streaming(const VelocitySet& velSet, std::vector<std::vector<Node>>& nodes, Domain domain)
 {
-	for (size_t dir = 0; dir < velSet.get_nDirections; dir++)
+	for (int coord_y = 0; coord_y < nodes.size(); coord_y++)
 	{
-		for (auto node : nodes)
+		for (int coord_x = 0; coord_x < nodes[coord_y].size(); coord_x++)
 		{
-			// Domain::m_nodes[x + ex][y + ey].fin = Domain::m_nodes[x][y].fout
+			bool isBoundary = 0;
+			for (size_t dir = 0; dir < velSet.get_nDirections; dir++)
+			{
+				int y_neighbour = coord_y + velSet.getDirection[dir][1];
+				int x_neighbour = coord_x + velSet.getDirection[dir][0];
+				if (domain.IsInDomain(x_neighbour, y_neighbour))
+				{
+					Node* neighbour_ptr = &nodes[y_neighbour][x_neighbour];
+					nodes[coord_y][coord_x].Stream(velSet, neighbour_ptr, dir);
+				}
+			}
 		}
 	}
 }
