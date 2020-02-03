@@ -35,7 +35,6 @@ void Simulation::Streaming(const VelocitySet& velSet, std::vector<std::vector<No
 	{
 		for (int coord_x = 0; coord_x < nodes[coord_y].size(); coord_x++)
 		{
-			bool isBoundary = 0;
 			for (size_t dir = 0; dir < velSet.get_nDirections; dir++)
 			{
 				int y_neighbour = coord_y + velSet.getDirection[dir][1];
