@@ -1,7 +1,7 @@
 #include "VelocitySet.h"
 
 VelocitySet::VelocitySet(std::vector<double> weights, std::vector<std::vector<int>> directions, double cSquare)
-	:	m_weights(weights), m_directions(directions), m_cSquare(cSquare), m_nrOfDimensions(directions[0].size())
+	: m_weights(weights), m_directions(directions), m_cSquare(cSquare), m_nrOfDimensions(directions[0].size())
 {
 }
 
@@ -9,27 +9,32 @@ VelocitySet::~VelocitySet()
 {
 }
 
-inline double VelocitySet::getWeight(size_t dir) const
+double VelocitySet::GetWeight(int dir) const
 {
 	return m_weights[dir];
 }
 
-inline std::vector<int> VelocitySet::getDirection(size_t dir) const
+std::vector<int> VelocitySet::GetDirection(int dir) const
 {
 	return m_directions[dir];
 }
 
-inline double VelocitySet::get_c_square(size_t dir) const
+double VelocitySet::Get_c_square(int dir) const
 {
 	return m_cSquare;
 }
 
-inline size_t VelocitySet::get_nDimensions() const
+int VelocitySet::Get_nDimensions() const
 {
 	return m_nrOfDimensions;
 }
 
-inline size_t VelocitySet::get_nDirections() const
+int VelocitySet::Get_nDirections() const
 {
 	return m_directions.size();
+}
+
+int VelocitySet::OppositeDirection(int dir) const
+{
+	return 0;
 }

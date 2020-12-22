@@ -8,6 +8,6 @@ public:
 	D2Q9();
 	~D2Q9();
 
-	size_t OppositeDirection(size_t dir) const override;
+	int OppositeDirection(int dir) const override;
 };
 

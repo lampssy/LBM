@@ -1,5 +1,5 @@
 #pragma once
-
+#include <iostream>
 #include "VelocitySet.h"
 
 class Node
@@ -7,13 +7,18 @@ class Node
 public:
 	std::vector<double> m_distributions;
 	std::vector<double> m_newDistributions;
+	std::shared_ptr<Node> m_neighbours[9];
+	int x_position;
+	int y_position;
 public:
-	Node();
+	Node(int coord_x, int coord_y);
 	~Node();
 
-	double Equilibrium(const VelocitySet& velSet, size_t dir);
-	double Density();
-	std::vector<double> Velocity(const VelocitySet& velSet, size_t idx);
-	virtual void Stream(const VelocitySet& velSet, Node* neighbour, size_t dir, Domain domain) = 0;	// every node type has to have streaming implemented
+	double Equilibrium(std::shared_ptr<VelocitySet> velSet, int dir);
+	virtual double Density();
+	virtual std::vector<double> Velocity(std::shared_ptr<VelocitySet> velSet);
+	void Stream(int dir);
+	void BounceBack(int dir, int opp_dir);
+	virtual void ApplyBC();
 };
 

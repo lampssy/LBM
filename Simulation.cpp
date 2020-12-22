@@ -1,7 +1,8 @@
 #include "Simulation.h"
 
 
-Simulation::Simulation()
+Simulation::Simulation(Domain& domain)
+	: m_domain(domain)
 {
 }
 
@@ -9,42 +10,76 @@ Simulation::~Simulation()
 {
 }
 
-void Simulation::iterate()
+void Simulation::Iterate()
 {
-	Collision();	
-	Streaming();	
+	Collision();
+	Streaming();
+	InletBC();
+	OutletBC();
 }
 
-void Simulation::Collision(const VelocitySet& velSet, std::vector<std::vector<Node>>& nodes, double relaxation)
+void Simulation::Collision()
 {
-	for (auto row : nodes)
+	for (auto node_ptr : m_domain.m_lattice)
 	{
-		for (auto node : row)
-		{
-			for (size_t dir = 0; dir < velSet.get_nDirections; dir++)
+		if (node_ptr != nullptr)
+			for (int dir = 0; dir < m_domain.GetVelSet()->Get_nDirections(); dir++)
 			{
-				node.m_newDistributions[dir] = node.m_distributions[dir] - 1 / relaxation * (node.m_distributions[dir] - node.Equilibrium(velSet, dir));	// applying BGK approximation
+				node_ptr->m_newDistributions[dir] = node_ptr->m_distributions[dir] - 1 / m_relaxation * (node_ptr->m_distributions[dir] - node_ptr->Equilibrium(m_domain.GetVelSet(), dir));	// applying BGK approximation
 			}
-		}
 	}
 }
 
-void Simulation::Streaming(const VelocitySet& velSet, std::vector<std::vector<Node>>& nodes, Domain domain)
+void Simulation::Streaming()
 {
-	for (int coord_y = 0; coord_y < nodes.size(); coord_y++)
+	for (auto node_ptr : m_domain.m_lattice)
 	{
-		for (int coord_x = 0; coord_x < nodes[coord_y].size(); coord_x++)
+		if (node_ptr != nullptr)
 		{
-			for (size_t dir = 0; dir < velSet.get_nDirections; dir++)
+			for (int dir = 1; dir < m_domain.GetVelSet()->Get_nDirections(); dir++)
 			{
-				int y_neighbour = coord_y + velSet.getDirection[dir][1];
-				int x_neighbour = coord_x + velSet.getDirection[dir][0];
-				if (domain.IsInDomain(x_neighbour, y_neighbour))
+				if (node_ptr->m_neighbours[dir] != nullptr)
+					node_ptr->Stream(dir);
+				else if (node_ptr->m_neighbours[dir] == nullptr && node_ptr->x_position != 0 && node_ptr->x_position != m_domain.m_domainSize[0] - 1)		// conditions for walls
 				{
-					Node* neighbour_ptr = &nodes[y_neighbour][x_neighbour];
-					nodes[coord_y][coord_x].Stream(velSet, neighbour_ptr, dir, domain);
+					int opp_dir = m_domain.GetVelSet()->OppositeDirection(dir);
+					node_ptr->BounceBack(dir, opp_dir);
 				}
 			}
 		}
 	}
+}
+
+void Simulation::InletBC()
+{
+	for (int coord_y = 0; coord_y < m_domain.m_domainSize[1]; coord_y++)
+	{
+		int idx = coord_y * m_domain.m_domainSize[0];
+		m_domain.m_lattice[idx]->ApplyBC();
+	}
+}
+
+void Simulation::OutletBC()
+{
+	for (int coord_y = 1; coord_y <= m_domain.m_domainSize[1]; coord_y++)
+	{
+		int idx = coord_y * m_domain.m_domainSize[0] - 1;
+		for (int dir = 1; dir < m_domain.GetVelSet()->Get_nDirections(); dir++)
+			if (m_domain.m_lattice[idx]->m_neighbours[dir] == nullptr)
+			{
+				int opp_dir = m_domain.GetVelSet()->OppositeDirection(dir);
+				m_domain.m_lattice[idx]->m_distributions[opp_dir] = m_domain.m_lattice[idx - 1]->m_distributions[opp_dir];
+			}
+	}
+}
+
+void Simulation::SetRelaxation(double tau)
+{
+	m_relaxation = tau;
+}
+
+void Simulation::WriteOutput(int iter)
+{
+	OutputFile file(std::to_wstring(iter));
+	file.WriteCSV(m_domain.m_lattice, m_domain.m_velSet);
 }

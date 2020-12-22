@@ -1,20 +1,26 @@
 #pragma once
 
-#include "InternalNode.h"
 #include "VelocitySet.h"
 #include "Domain.h"
-
+#include "OutputFile.h"
 
 class Simulation
 {
 private:
-	void Collision(const VelocitySet& velSet, std::vector<std::vector<Node>>& nodes, double relaxation);
-	void Streaming(const VelocitySet& velSet, std::vector<std::vector<Node>>& nodes, Domain domain);
+	Domain m_domain;
+	double m_relaxation;
+private:
+	void Collision();
+	void Streaming();
+	void InletBC();
+	void OutletBC();
 
 public:
-	Simulation();
+	Simulation(Domain& domain);
 	~Simulation();
-	
-	void iterate();
+
+	void Iterate();
+	void SetRelaxation(double tau);
+	void WriteOutput(int iter);
 };
 
