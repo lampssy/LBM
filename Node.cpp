@@ -27,6 +27,17 @@ double Node::Equilibrium(std::shared_ptr<VelocitySet> velSet, int dir)
 	return velSet->GetWeight(dir) * Density() * (1 + 3 * du + 9 / 2 * du * du - 3 / 2 * u_sqr);
 }
 
+double Node::Initialize(std::shared_ptr<VelocitySet> velSet, int dir)
+{
+	double vel_x = 0.04 * sin(double(y_position) / double(149) * PI);
+	double rho = 1;
+	double du = vel_x * velSet->GetDirection(dir)[0];
+	double u_sqr = vel_x * vel_x;
+
+	m_distributions.push_back(velSet->GetWeight(dir) * rho * (1 + 3 * du + 9 / 2 * du * du - 3 / 2 * u_sqr));
+	m_newDistributions.push_back(0);
+}
+
 double Node::Density()
 {
 	double density = 0;
@@ -68,3 +79,5 @@ void Node::BounceBack(int dir, int opp_dir)
 void Node::ApplyBC()
 {
 }
+
+const double Node::PI = 3.1415;

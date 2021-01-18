@@ -21,8 +21,9 @@ void Domain::Initialize()
 			node_ptr->m_distributions.reserve(m_velSet->Get_nDirections());
 			for (int dir = 0; dir < m_velSet->Get_nDirections(); dir++)
 			{
-				node_ptr->m_distributions.push_back(m_velSet->GetWeight(dir));
-				node_ptr->m_newDistributions.push_back(m_velSet->GetWeight(dir));
+				//node_ptr->m_distributions.push_back(m_velSet->GetWeight(dir));
+				//node_ptr->m_newDistributions.push_back(m_velSet->GetWeight(dir));
+				node_ptr->Initialize(m_velSet, dir);
 			}
 		}
 	}
@@ -43,7 +44,7 @@ void Domain::ConnectNodes()
 				if (IsInDomain(x_neighbour, y_neighbour))
 				{
 					int idx_neighbour = y_neighbour * m_domainSize[0] + x_neighbour;
-					//td::shared_ptr<Node> neighbour_ptr = m_lattice[idx_neighbour];
+					//std::shared_ptr<Node> neighbour_ptr = m_lattice[idx_neighbour];
 					//memcpy(&neighbour_ptr, &m_lattice[idx_neighbour], sizeof(std::shared_ptr<Node>));
 					node_ptr->m_neighbours[dir] = m_lattice[idx_neighbour];
 				}

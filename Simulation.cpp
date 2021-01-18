@@ -23,10 +23,12 @@ void Simulation::Collision()
 	for (auto node_ptr : m_domain.m_lattice)
 	{
 		if (node_ptr != nullptr)
+		{
 			for (int dir = 0; dir < m_domain.GetVelSet()->Get_nDirections(); dir++)
 			{
 				node_ptr->m_newDistributions[dir] = node_ptr->m_distributions[dir] - 1 / m_relaxation * (node_ptr->m_distributions[dir] - node_ptr->Equilibrium(m_domain.GetVelSet(), dir));	// applying BGK approximation
 			}
+		}
 	}
 }
 
@@ -46,6 +48,8 @@ void Simulation::Streaming()
 					node_ptr->BounceBack(dir, opp_dir);
 				}
 			}
+			//if (node_ptr->x_position == 1 && node_ptr->y_position == 75)
+				//std::cout << "after streaming: " << node_ptr->Velocity(m_domain.m_velSet)[0] << "," << node_ptr->Velocity(m_domain.m_velSet)[1] << std::endl;
 		}
 	}
 }
@@ -80,6 +84,6 @@ void Simulation::SetRelaxation(double tau)
 
 void Simulation::WriteOutput(int iter)
 {
-	OutputFile file(std::to_wstring(iter));
+	OutputFile file((iter));
 	file.WriteCSV(m_domain.m_lattice, m_domain.m_velSet);
 }

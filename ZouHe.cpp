@@ -6,7 +6,7 @@
 ZouHe::ZouHe(int coord_x, int coord_y)
 	:	Node(coord_x, coord_y)
 {
-	SetInletVel(0.04 * sin(double(coord_y)/double(150) * PI), 0);
+	SetInletVel(0.04 * sin(double(coord_y)/double(149) * PI), 0);	// parabolic inlet profile
 }
 
 
@@ -39,7 +39,7 @@ void ZouHe::ApplyBC()
 	{
 		m_distributions[1] = m_distributions[3] + 2 / 3 * density * m_inletVel[0];
 		m_distributions[5] = m_distributions[7] + density / 2 * (m_inletVel[1] + m_inletVel[0] / 3) + 1 / 2 * (m_distributions[4] - m_distributions[2]);
-		m_distributions[8] = m_distributions[6] + density / 2 * (-m_inletVel[1] + m_inletVel[0] / 3) - 1 / 2 * (m_distributions[4] - m_distributions[2]);
+		m_distributions[8] = m_distributions[6] + density / 2 * (m_inletVel[1] + m_inletVel[0] / 3) - 1 / 2 * (m_distributions[4] - m_distributions[2]);
 	}
 
 }

@@ -1,8 +1,7 @@
 #include "OutputFile.h"
 
 
-
-OutputFile::OutputFile(std::wstring outputIdx)
+OutputFile::OutputFile(int outputIdx)
 	:	m_outputIdx(outputIdx)
 {
 }
@@ -16,7 +15,8 @@ OutputFile::~OutputFile()
 void OutputFile::WriteCSV(std::vector<std::shared_ptr<Node>> lattice, std::shared_ptr<VelocitySet> velSet)
 {
 	std::ofstream velocityCSV;
-	velocityCSV.open("U.csv");
+	std::string file_name = std::to_string(m_outputIdx) + ".csv";
+	velocityCSV.open(file_name);
 	velocityCSV << "coordX" << "," << "coordY" << "," << "coordZ" << "," << "U" << std::endl;
 
 	/*std::ofstream distributionsCSV;
@@ -33,10 +33,4 @@ void OutputFile::WriteCSV(std::vector<std::shared_ptr<Node>> lattice, std::share
 			double velMag = sqrt(node->Velocity(velSet)[0] * node->Velocity(velSet)[0] + node->Velocity(velSet)[1] * node->Velocity(velSet)[1]);
 			velocityCSV << node->x_position << "," << node->y_position << "," << 0 << "," << velMag << std::endl;
 		}
-}
-
-void OutputFile::CreateOutputDir()
-{
-	wchar_t const* dirName = m_outputIdx.c_str();
-	_wmkdir(dirName);
 }
